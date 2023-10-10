@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { photosAllRequest } from '../actions/photos'
 import { Photo } from './Photo'
 
+const PER_PAGE = 30
+
 const List = () => {
   const observerTarget = useRef(null);
   const dispatch = useDispatch();
@@ -10,13 +12,13 @@ const List = () => {
   const [page, setPage] = useState(1)
 
   useEffect(() => {
-    if (total && page > 1 && page <= Math.ceil(total / 30)) {
-      dispatch(photosAllRequest({ perPage: 30, page: page }))
+    if (total && page > 1 && page <= Math.ceil(total / PER_PAGE)) {
+      dispatch(photosAllRequest({ perPage: PER_PAGE, page: page }))
     }
   }, [page, total])
 
   useEffect(() => {
-    dispatch(photosAllRequest({ perPage: 30, page: page }))
+    dispatch(photosAllRequest({ perPage: PER_PAGE, page: page }))
   }, [])
 
   useEffect(() => {
@@ -53,11 +55,25 @@ const List = () => {
         }}>
 
         {list?.map(image =>
-          <Photo key={image.id} authorName={`${image.user?.first_name ?? ''} ${image.user?.last_name ?? ''}`} link={image.urls?.small} />
+          <Photo
+            key={image.id}
+            authorName={`${image.user?.first_name ?? ''} ${image.user?.last_name ?? ''}`}
+            link={image.urls?.small}
+          />
         )}
       </div>
 
-      {isLoading && !!list.length && <div style={{ width: '100%', height: '120px', display: 'flex', justifyContent: 'center' }}>{'Loading...'}</div>}
+      {isLoading && !!list.length && 
+        <div
+          style={{
+            width: '100%',
+            height: '120px',
+            display: 'flex',
+            justifyContent: 'center'
+        }}>
+          {'Loading...'}
+        </div>}
+
       <div style={{ width: '100%', backgroundColor: 'blue' }} ref={observerTarget} />
     </div>)
 };
